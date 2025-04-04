@@ -199,7 +199,7 @@ def download_process_and_save_m3u(m3u_url: str, file_index: int, output_folder: 
     # 1. Download content into memory (BytesIO)
     try:
         headers = {'User-Agent': 'Mozilla/5.0', 'Accept-Encoding': 'gzip, deflate'}
-        response = requests.get(m3u_url, timeout=180, headers=headers, stream=True)
+        response = requests.get(m3u_url, timeout=30, headers=headers, stream=True)
         response.raise_for_status()
 
         content_length_str = response.headers.get('Content-Length')
@@ -334,7 +334,7 @@ def main() -> None:
     input_file = "fixm3u.txt"
     output_folder = "specialiptvs"
     # Keep concurrency low for stability during download AND processing
-    max_concurrent_workers = 1000 # Adjusted concurrency
+    max_concurrent_workers = 500 # Adjusted concurrency
 
     try:
         print_colored(f"Starting M3U file download & processing from '{input_file}'...", "magenta")

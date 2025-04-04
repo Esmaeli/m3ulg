@@ -9,21 +9,15 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
 import traceback
 import signal
-
-# --- کتابخانه‌های مورد نیاز برای ترجمه DNS ---
-try:
-    import dns.resolver
-    from urllib.parse import urlparse, urlunparse
-except ImportError:
-    print("Error: 'dnspython' library not found. Please install it: pip install dnspython")
-    sys.exit(1)
+from urllib.parse import urlparse, urlunparse
+import json # برای پردازش پاسخ DoH
 
 # مسیر پوشه‌ای که فایل‌های m3u در آن قرار دارند
 input_folder = 'specialiptvs'
 # مسیر پوشه‌ای که فایل‌های معتبر در آن قرار می‌گیرند
 best_folder = 'best'
-# سرورهای DNS شکن
-SHECAN_DNS = ['185.51.200.2', '178.22.122.100']
+# نقطه پایانی DoH شکن
+SHECAN_DOH_URL = "https://free.shecan.ir/dns-query"
 
 # --- Helper Function for Colored Output ---
 def print_colored(text: str, color: str) -> None:
@@ -52,81 +46,86 @@ def clean_best_folder():
 
     try:
         os.makedirs(best_folder, exist_ok=True)
-        # ایجاد فایل .gitkeep برای پوشه‌های خالی در گیت
         gitkeep_path = os.path.join(best_folder, ".gitkeep")
         with open(gitkeep_path, "w") as f:
             f.write("")
     except Exception as e:
         print_colored(f"خطا در ایجاد پوشه {best_folder}: {e}", "red")
-        # Exit if we cannot create the output folder
         sys.exit(1)
 
 
-# --- تابع کمکی برای ترجمه DNS ---
-def resolve_with_custom_dns(hostname, dns_servers):
-    """Resolves hostname to IP using specified DNS servers."""
-    # Add default port for resolver if needed, though usually not necessary for standard DNS
-    resolver = dns.resolver.Resolver(configure=False) # Do not use system config
-    resolver.nameservers = dns_servers
-    resolver.timeout = 5 # Set a timeout for DNS query
-    resolver.lifetime = 5 # Total time allowed for query
+# --- تابع جدید برای ترجمه DNS با استفاده از DoH ---
+def resolve_with_doh(hostname, doh_url=SHECAN_DOH_URL, timeout=10):
+    """Resolves hostname to IP using the specified DNS over HTTPS endpoint."""
+    headers = {'Accept': 'application/dns-json'}
+    params = {'name': hostname, 'type': 'A'} # Query for IPv4 address (A record)
 
     try:
-        # Try resolving A record (IPv4) first
-        answers = resolver.resolve(hostname, 'A', raise_on_no_answer=False)
-        if answers:
-            return answers[0].to_text() # Return the first IPv4 found
+        response = requests.get(doh_url, params=params, headers=headers, timeout=timeout)
+        response.raise_for_status() # Check for HTTP errors
+
+        data = response.json()
+
+        # Check if the response status indicates success (Status: 0 typically means NOERROR)
+        if data.get('Status') == 0 and 'Answer' in data:
+            # Find the first A record in the Answer array
+            for answer in data['Answer']:
+                if answer.get('type') == 1: # Type 1 corresponds to A record (IPv4)
+                    return answer.get('data') # Return the IP address string
+            # If loop finishes without returning, no A record found
+            print_colored(f"DoH: No A record found for {hostname} in response.", "yellow")
         else:
-            # If no A record, try AAAA (IPv6) - optional
-            # answers = resolver.resolve(hostname, 'AAAA', raise_on_no_answer=False)
-            # if answers:
-            #     return answers[0].to_text() # Return first IPv6
-             print_colored(f"DNS: No A record found for {hostname} using {dns_servers}", "yellow")
+            # Log status if resolution failed from DoH server perspective
+            status = data.get('Status', 'N/A')
+            print_colored(f"DoH: Resolution failed for {hostname} (Status: {status}).", "yellow")
 
-    except dns.exception.Timeout:
-         print_colored(f"DNS Timeout resolving {hostname} using {dns_servers}", "yellow")
-    except dns.resolver.NoNameservers as e:
-         print_colored(f"DNS No Nameservers ({dns_servers}): {e}", "yellow")
-    except dns.resolver.NXDOMAIN:
-         print_colored(f"DNS NXDOMAIN: Domain {hostname} not found using {dns_servers}", "yellow")
+    except requests.exceptions.Timeout:
+        print_colored(f"DoH: Timeout connecting to {doh_url} for {hostname}", "yellow")
+    except requests.exceptions.RequestException as e:
+        print_colored(f"DoH: Request Error for {hostname}: {e}", "yellow")
+    except json.JSONDecodeError:
+        print_colored(f"DoH: Failed to parse JSON response from {doh_url} for {hostname}", "yellow")
     except Exception as e:
-        print_colored(f"DNS resolution failed for {hostname} using {dns_servers}: {type(e).__name__}", "yellow")
+        print_colored(f"DoH: Unexpected error resolving {hostname}: {type(e).__name__}", "yellow")
 
-    return None # Return None if resolution fails for any reason
+    return None # Return None if resolution fails
 
-# --- تابع تست و دانلود استریم با DNS سفارشی ---
+
+# --- تابع تست و دانلود استریم با DoH ---
 def download_stream(url, duration=80):
     """
-    Tests a stream URL by downloading for a duration, using custom DNS resolution.
+    Tests a stream URL by downloading for a duration, using DoH resolution.
     Checks download speed after an initial period.
     """
     start_time = time.time()
     total_downloaded = 0
-    valid = True # Assume valid initially
+    valid = True
     resolved_ip = None
     original_host = None
     scheme = None
 
     try:
-        # --- مرحله 1: تجزیه URL و ترجمه DNS ---
+        # --- مرحله 1: تجزیه URL و ترجمه DNS با DoH ---
         try:
             parsed_url = urlparse(url)
-            original_host = parsed_url.hostname # Returns None if parsing fails
+            original_host = parsed_url.hostname
             scheme = parsed_url.scheme
             if not original_host or scheme not in ['http', 'https']:
-                print_colored(f"Invalid URL format: {url}", "red")
+                print_colored(f"Invalid URL: {url}", "red")
                 return False
         except Exception as parse_err:
              print_colored(f"Error parsing URL {url}: {parse_err}", "red")
              return False
 
-        resolved_ip = resolve_with_custom_dns(original_host, SHECAN_DNS)
+        # --- *** استفاده از تابع DoH *** ---
+        resolved_ip = resolve_with_doh(original_host)
 
         if not resolved_ip:
-            print_colored(f"DNS Failed for {original_host}. Cannot test stream.", "red")
-            return False # Cannot proceed without IP
+            # Reason already printed by resolve_with_doh
+            print_colored(f"Cannot test stream for {original_host} due to DNS failure.", "red")
+            return False
 
-        print_colored(f"DNS OK: {original_host} -> {resolved_ip} (via Shecan)", "cyan")
+        print_colored(f"DoH OK: {original_host} -> {resolved_ip} (via Shecan)", "cyan")
 
         # --- مرحله 2: ساخت URL جدید و هدر Host ---
         new_netloc = resolved_ip
@@ -137,82 +136,72 @@ def download_stream(url, duration=80):
         url_with_ip = urlunparse(url_with_ip_parts)
 
         headers = {'Host': original_host,
-                   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'} # Common UA
-
+                   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
 
         # --- مرحله 3: درخواست به IP با هدر Host و verify=False برای HTTPS ---
-        verify_ssl = True # Default to verify
+        verify_ssl = True
         if scheme == 'https':
-            verify_ssl = False # !!! IMPORTANT SECURITY WARNING !!!
-            print_colored(f"Warning: Using verify=False for HTTPS connection to {original_host} ({resolved_ip}). SSL/TLS verification disabled!", "yellow")
+            verify_ssl = False # !!! SECURITY WARNING: Disabling SSL verification !!!
+            # print_colored(f"Warning: Using verify=False for HTTPS connection to {original_host} ({resolved_ip}).", "yellow") # Reduce verbosity
 
-        response = requests.get(url_with_ip, stream=True, timeout=duration, headers=headers, verify=verify_ssl)
-        response.raise_for_status() # Check for HTTP errors (4xx, 5xx)
+        # Use a session for potential connection pooling within the test
+        with requests.Session() as session:
+             session.headers.update(headers) # Set Host header for the session
+             response = session.get(url_with_ip, stream=True, timeout=duration, verify=verify_ssl) # verify=False for HTTPS!
+             response.raise_for_status()
 
-        # --- مرحله 4: دانلود و بررسی سرعت ---
-        # Note: Content-Length might be unreliable when connecting via IP
-        # tqdm might show 0 total if Content-Length is missing/wrong
-        file_size = int(response.headers.get('content-length', 0))
-        chunk_size = 8192 # Slightly larger chunk
-        progress_bar = tqdm(total=file_size if file_size > 0 else None, unit='B', unit_scale=True, desc=f"Testing {original_host[:20]}", leave=False, disable=None) # Auto-disable if not TTY
+             # --- مرحله 4: دانلود و بررسی سرعت ---
+             file_size = int(response.headers.get('content-length', 0))
+             chunk_size = 8192
+             progress_bar = tqdm(total=file_size if file_size > 0 else None, unit='B', unit_scale=True, desc=f"Testing {original_host[:20]}", leave=False, disable=None)
 
-        min_speed_kbps = 40 # Minimum speed in KB/s after initial buffer
-        initial_buffer_time = 5 # Seconds before checking speed
+             min_speed_kbps = 40
+             initial_buffer_time = 5
 
-        for chunk in response.iter_content(chunk_size=chunk_size):
-            elapsed_time = time.time() - start_time
-            if elapsed_time >= duration:
-                print_colored(" Test duration reached.", "yellow")
-                break # Stop after specified duration
+             for chunk in response.iter_content(chunk_size=chunk_size):
+                 elapsed_time = time.time() - start_time
+                 if elapsed_time >= duration:
+                     # print_colored(" Test duration reached.", "yellow") # Less verbose
+                     break
 
-            if chunk:
-                len_chunk = len(chunk)
-                if progress_bar: progress_bar.update(len_chunk)
-                total_downloaded += len_chunk
+                 if chunk:
+                     len_chunk = len(chunk)
+                     if progress_bar: progress_bar.update(len_chunk)
+                     total_downloaded += len_chunk
 
-                # بررسی سرعت دانلود فقط بعد از چند ثانیه اولیه
-                if elapsed_time > initial_buffer_time:
-                    current_speed_bps = total_downloaded / elapsed_time
-                    current_speed_kbps = current_speed_bps / 1024
-                    if current_speed_kbps < min_speed_kbps:
-                        print_colored(f" Speed low ({current_speed_kbps:.1f} KB/s < {min_speed_kbps} KB/s). Invalid.", "red")
-                        valid = False
-                        break # Stop if speed is too low
+                     if elapsed_time > initial_buffer_time:
+                         current_speed_bps = total_downloaded / elapsed_time
+                         current_speed_kbps = current_speed_bps / 1024
+                         if current_speed_kbps < min_speed_kbps:
+                             # print_colored(f" Speed low ({current_speed_kbps:.1f} KB/s). Invalid.", "red") # Less verbose
+                             valid = False
+                             break
+             if progress_bar: progress_bar.close()
 
-            # Prevent tight loop hammering CPU if no data arrives for a bit
-            # time.sleep(0.01) # Small sleep if needed? Might interfere with speed calc.
+             if total_downloaded == 0 and file_size != 0: # Check if nothing downloaded unless expected size is 0
+                 print_colored(" No data downloaded. Invalid.", "red")
+                 valid = False
 
-        if progress_bar: progress_bar.close()
+             # Ensure response stream is fully read or closed (important with sessions)
+             response.close()
 
-        # Additional check: was anything downloaded at all?
-        if total_downloaded == 0:
-             print_colored(" No data downloaded. Invalid.", "red")
-             valid = False
-
-        # Ensure response is closed
-        response.close()
 
     except requests.exceptions.Timeout:
-        print_colored(" Request Timed Out.", "red")
+        print_colored(f" Request Timed Out testing {original_host}.", "red")
         valid = False
-    except requests.exceptions.SSLError as e:
-         # This might still happen even with verify=False if other SSL issues occur
-         print_colored(f" SSL Error connecting to {resolved_ip} for {original_host}: {e}", "red")
-         valid = False
     except requests.exceptions.RequestException as e:
         status = getattr(e.response, 'status_code', 'N/A')
         print_colored(f" Request Error (Status: {status}) testing {original_host}. Invalid.", "red")
         valid = False
     except Exception as e:
-        # Catch any other unexpected error during the process
         print_colored(f" Unexpected Error testing {original_host}: {type(e).__name__} - {e}", "red")
         # print(traceback.format_exc()) # Uncomment for debugging
         valid = False
 
-    # Final result message
+    # Final result message (more concise)
     if valid:
-        print_colored(f"Stream OK ({total_downloaded / 1024 / 1024:.2f} MB downloaded).", "green")
-    # else: (already printed reason for invalidity)
+        print_colored(f"Stream OK ({total_downloaded / 1024 / 1024:.2f} MB).", "green")
+    # else: (reason should have been printed)
 
     return valid
 
@@ -220,101 +209,88 @@ def download_stream(url, duration=80):
 # --- تابع پردازش فایل M3U ---
 def process_m3u_file(file_path):
     """
-    Processes a single M3U file, extracts the 15th line as URL, and tests it.
+    Processes a single M3U file, extracts the 15th line as URL, and tests it using DoH.
     Returns the file_path if the stream is valid, otherwise None.
     """
     lines = []
     try:
-        # Try reading with UTF-8 first
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             lines = file.readlines()
     except Exception as e:
          print_colored(f"Error reading file {os.path.basename(file_path)}: {e}", "red")
-         return None # Cannot process if read fails
+         return None
 
-
-    required_line_index = 14 # 15th line has index 14
+    required_line_index = 14
 
     if len(lines) > required_line_index:
         stream_url_line = lines[required_line_index].strip()
-        if stream_url_line.startswith(('http://', 'https://')):
+        # Basic check if it looks like a URL before processing
+        if stream_url_line.startswith(('http://', 'https://')) and '.' in stream_url_line:
             print(f"\nProcessing: {os.path.basename(file_path)}")
-            print(f"Stream URL (Line 15): {stream_url_line}")
-            # Call the modified download_stream function
+            # print(f"Stream URL (Line 15): {stream_url_line}") # Less verbose
             if download_stream(stream_url_line):
-                # print("Stream is valid.") # Message printed by download_stream now
                 return file_path
             else:
-                # print("Stream is invalid.") # Message printed by download_stream now
                 return None
         else:
-            print(f"Line 15 in {os.path.basename(file_path)} is not a valid URL: '{stream_url_line[:50]}...'")
+            # print(f"Line 15 in {os.path.basename(file_path)} is not a valid URL.") # Less verbose
             return None
     else:
-        print(f"File {os.path.basename(file_path)} has < 15 lines.")
+        # print(f"File {os.path.basename(file_path)} has < 15 lines.") # Less verbose
         return None
 
 
 # --- تابع اصلی ---
 def main():
-    # پاک کردن و ایجاد مجدد پوشه best
     clean_best_folder()
 
-    # لیست تمام فایل‌های m3u در پوشه ورودی
     if not os.path.isdir(input_folder):
-         print_colored(f"Error: Input folder '{input_folder}' not found or not a directory.", "red")
+         print_colored(f"Error: Input folder '{input_folder}' not found.", "red")
          sys.exit(1)
 
     m3u_files = [f for f in os.listdir(input_folder) if f.lower().endswith('.m3u')]
     if not m3u_files:
         print_colored(f"No .m3u files found in '{input_folder}'. Exiting.", "yellow")
-        return # Exit gracefully if no files
+        return
 
-    print_colored(f"Found {len(m3u_files)} .m3u files in '{input_folder}'. Starting processing...", "magenta")
+    print_colored(f"Found {len(m3u_files)} .m3u files. Testing streams using Shecan DoH...", "magenta")
 
-    # پردازش فایل‌ها به صورت موازی
     valid_files = []
-    # Limit max_workers to avoid overwhelming the system/network even more with DNS lookups + downloads
-    # Start lower and increase if stable. Using len(m3u_files) can be dangerous.
-    num_workers = min(100, len(m3u_files)) # Start with a more reasonable number of workers
+    # Adjust workers based on typical GitHub Actions runner resources (e.g., 2-4 cores)
+    # Network calls (DoH + Stream test) are IO bound, but too many can still cause issues.
+    num_workers = min(max(4, os.cpu_count() * 4 ), 200) # Heuristic: start with 4x CPU cores, max 200
     print_colored(f"Using {num_workers} concurrent workers.", "cyan")
 
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [executor.submit(process_m3u_file, os.path.join(input_folder, filename)) for filename in m3u_files]
 
-        for future in tqdm(as_completed(futures), total=len(m3u_files), desc="Processing M3U files", unit="file"):
+        for future in tqdm(as_completed(futures), total=len(m3u_files), desc="Testing Streams", unit="file"):
             try:
                 result = future.result()
                 if result:
-                    valid_files.append(result) # Store path of valid file
+                    valid_files.append(result)
             except Exception as e:
-                 # This catches errors in the future itself (less likely now with try/except in worker)
                  print_colored(f"\nError processing a file future: {e}", "red")
 
-
-    # کپی فایل‌های معتبر به پوشه best با نام‌های مرتب
     print_colored(f"\nFound {len(valid_files)} valid files. Copying to '{best_folder}'...", "magenta")
     copied_count = 0
     mvp_copied = False
-    # Sort valid_files alphabetically before assigning numbers? Or keep processing order?
-    # Let's keep processing order for now.
+    # Sort alphabetically for deterministic output order
+    valid_files.sort()
     for index, file_path in enumerate(valid_files, start=1):
         try:
             base_filename = os.path.basename(file_path)
             best_file_path = os.path.join(best_folder, f"best{index}.m3u")
             shutil.copy(file_path, best_file_path)
-            print_colored(f"Copied '{base_filename}' -> '{os.path.basename(best_file_path)}'", "green")
+            # print_colored(f"Copied '{base_filename}' -> '{os.path.basename(best_file_path)}'", "green") # Less verbose
             copied_count += 1
 
-            # کپی فایل دوم (index == 2) به عنوان mvp.m3u
-            # ** توجه: اگر کمتر از 2 فایل معتبر باشد، mvp.m3u ساخته نمی‌شود **
             if index == 2:
-                mvp_file_path = os.path.join(os.getcwd(), "mvp.m3u") # In current working directory
+                mvp_file_path = os.path.join(os.getcwd(), "mvp.m3u")
                 try:
-                    if os.path.exists(mvp_file_path):
-                        os.remove(mvp_file_path)
+                    if os.path.exists(mvp_file_path): os.remove(mvp_file_path)
                     shutil.copy(file_path, mvp_file_path)
-                    print_colored(f"Copied '{base_filename}' -> 'mvp.m3u'", "green")
+                    print_colored(f"Copied '{base_filename}' -> 'mvp.m3u' (as 2nd valid)", "green")
                     mvp_copied = True
                 except Exception as mvp_e:
                      print_colored(f"Error copying {base_filename} to mvp.m3u: {mvp_e}", "red")
@@ -325,12 +301,12 @@ def main():
 
     print_colored(f"\n--- Summary ---", "magenta")
     print_colored(f"Total files processed: {len(m3u_files)}", "cyan")
-    print_colored(f"Valid files found: {len(valid_files)}", "cyan")
+    print_colored(f"Valid streams found: {len(valid_files)}", "cyan")
     print_colored(f"Files copied to '{best_folder}': {copied_count}", "green")
     if mvp_copied:
-         print_colored(f"MVP file 'mvp.m3u' created from the second valid file.", "green")
+         print_colored(f"MVP file 'mvp.m3u' created.", "green")
     elif len(valid_files) >= 1 :
-         print_colored(f"MVP file 'mvp.m3u' was not created (needed at least 2 valid files, found {len(valid_files)}).", "yellow")
+         print_colored(f"MVP file not created (needed >= 2 valid streams, found {len(valid_files)}).", "yellow")
 
 
 # --- Entry Point ---
@@ -339,10 +315,8 @@ if __name__ == "__main__":
         print_colored("Error: This script requires Python 3.7 or higher.", "red")
         sys.exit(1)
 
-    # Handle Ctrl+C
     def signal_handler(sig, frame):
         print_colored('\nCtrl+C detected. Exiting...', 'yellow')
-        # Consider if more graceful shutdown is needed (e.g., waiting for workers)
         sys.exit(0)
     signal.signal(signal.SIGINT, signal_handler)
 

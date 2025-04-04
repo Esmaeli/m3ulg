@@ -117,7 +117,7 @@ def main():
         print(f"Copied to {best_file_path}")
         
         # اگر اولین فایل معتبر است، آن را به عنوان mvp.m3u نیز کپی کنید
-        if index == 3:
+        if index == 2:
             mvp_file_path = os.path.join(os.getcwd(), "mvp.m3u")
             if os.path.exists(mvp_file_path):
                 os.remove(mvp_file_path)

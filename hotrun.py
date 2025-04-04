@@ -331,7 +331,7 @@ def download_process_and_save_m3u(m3u_url: str, file_index: int, output_folder: 
 # --- Main Function (Adjusted Concurrency) ---
 def main() -> None:
     """Main function to read URLs, download, process, and save M3U files."""
-    input_file = "fixm3u.txt"
+    input_file = "m3ulinks.txt"
     output_folder = "specialiptvs"
     # Keep concurrency low for stability during download AND processing
     max_concurrent_workers = 500 # Adjusted concurrency

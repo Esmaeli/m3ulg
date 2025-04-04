@@ -10,29 +10,40 @@ import sys
 import traceback
 import signal
 from urllib.parse import urlparse, urlunparse
-import json # برای پردازش پاسخ DoH
+import random # برای انتخاب تصادفی پراکسی
+
+# --- نیازمندی پراکسی SOCKS ---
+# pip install requests[socks]
+# یا pip install PySocks requests
 
 # مسیر پوشه‌ای که فایل‌های m3u در آن قرار دارند
 input_folder = 'specialiptvs'
 # مسیر پوشه‌ای که فایل‌های معتبر در آن قرار می‌گیرند
 best_folder = 'best'
-# نقطه پایانی DoH شکن
-SHECAN_DOH_URL = "https://free.shecan.ir/dns-query"
+
+# --- لیست اولیه پراکسی های ایرانی ---
+PROXY_LIST = [
+    "128.140.113.110:5153", "91.107.186.37:80", "91.107.154.214:80",
+    "31.47.58.37:80", "185.105.102.179:80", "109.230.92.50:3128",
+    "185.172.214.112:80", "31.57.156.166:8888", "185.105.102.189:80",
+    "87.248.129.26:80", "5.78.124.240:40000", "5.161.103.41:88",
+    "77.104.75.97:5678", "2.188.229.150:7020", "188.121.121.6:3128",
+    "81.12.106.158:8080", "80.191.2.7:1080", # SOCKS5 assumed
+    "188.136.160.222:7060", "78.38.99.74:8080", "91.92.213.58:8080",
+    "91.108.113.52:3128", "31.57.228.216:3128", "5.161.146.73:41914",
+    "185.80.196.118:15000", "80.75.7.58:8080", "5.75.168.247:8010",
+    "185.42.226.218:4000",
+]
 
 # --- Helper Function for Colored Output ---
 def print_colored(text: str, color: str) -> None:
     """Prints colored text to the console."""
-    colors = {
-        "green": "\033[92m", "red": "\033[91m", "yellow": "\033[93m",
-        "cyan": "\033[96m", "magenta": "\033[95m", "white": "\033[97m"
-    }
+    colors = {"green": "\033[92m", "red": "\033[91m", "yellow": "\033[93m",
+              "cyan": "\033[96m", "magenta": "\033[95m", "white": "\033[97m"}
     if sys.stdout.isatty() and os.name != 'nt':
-        try:
-            print(f"{colors.get(color.lower(), '')}{text}\033[0m")
-        except Exception:
-            print(text)
-    else:
-        print(text)
+        try: print(f"{colors.get(color.lower(), '')}{text}\033[0m")
+        except Exception: print(text)
+    else: print(text)
 
 # --- Function to Clean Output Folder ---
 def clean_best_folder():
@@ -40,211 +51,177 @@ def clean_best_folder():
     if os.path.exists(best_folder):
         try:
             shutil.rmtree(best_folder)
-            print_colored(f"پوشه {best_folder} با موفقیت پاک شد.", "green")
+            # print_colored(f"پوشه {best_folder} پاک شد.", "green") # Less verbose
         except Exception as e:
-            print_colored(f"خطا در پاک کردن پوشه {best_folder}: {e}", "red")
-
+            print_colored(f"خطا در پاک کردن {best_folder}: {e}", "red")
     try:
         os.makedirs(best_folder, exist_ok=True)
-        gitkeep_path = os.path.join(best_folder, ".gitkeep")
-        with open(gitkeep_path, "w") as f:
-            f.write("")
+        with open(os.path.join(best_folder, ".gitkeep"), "w") as f: f.write("")
     except Exception as e:
-        print_colored(f"خطا در ایجاد پوشه {best_folder}: {e}", "red")
+        print_colored(f"خطا در ایجاد {best_folder}: {e}", "red")
         sys.exit(1)
 
+# --- تابع پیش-بررسی پراکسی (جدید) ---
+def check_proxy(proxy_str, check_url='http://httpbin.org/ip', timeout=8):
+    """Tries to connect to check_url via the proxy. Returns proxy_str if successful, None otherwise."""
+    protocol = 'http'
+    if ':1080' in proxy_str or ':1088' in proxy_str or ':9050' in proxy_str:
+        protocol = 'socks5h'
 
-# --- تابع جدید برای ترجمه DNS با استفاده از DoH (با هدر اصلاح شده) ---
-def resolve_with_doh(hostname, doh_url=SHECAN_DOH_URL, timeout=10):
-    """Resolves hostname to IP using the specified DNS over HTTPS endpoint."""
-    # --- *** تغییر: حذف یا تغییر هدر Accept *** ---
-    # سعی می‌کنیم بدون ارسال هدر Accept خاص، درخواست دهیم.
-    # یا می‌توان هدر عمومی‌تری مثل 'Accept': '*/*' را امتحان کرد.
-    headers = {
-         'User-Agent': 'Mozilla/5.0 Python-Requests-Script' # ارسال یک User-Agent ساده
-         # 'Accept': '*/*' # امتحان کردن این اگر حذف کردن کار نکرد
+    proxies = {
+        'http': f'{protocol}://{proxy_str}',
+        'https': f'{protocol}://{proxy_str}'
     }
-    params = {'name': hostname, 'type': 'A'} # Query for IPv4 address (A record)
-
     try:
-        # print(f"DoH Query: {doh_url} with params={params}") # Debugging line
-        response = requests.get(doh_url, params=params, headers=headers, timeout=timeout)
-        response.raise_for_status() # Check for HTTP errors (4xx, 5xx)
+        # Use a simple HEAD request for speed, or GET if HEAD fails often
+        response = requests.get(check_url, proxies=proxies, timeout=timeout, headers={'User-Agent': 'ProxyChecker/1.0'})
+        # Check for successful status code (2xx)
+        if 200 <= response.status_code < 300:
+            # print_colored(f"Proxy OK: {proxy_str}", "green") # Debugging
+            return proxy_str
+        # else: # Debugging
+        #    print_colored(f"Proxy BAD Status ({response.status_code}): {proxy_str}", "yellow")
 
-        # print(f"DoH Response Status: {response.status_code}") # Debugging line
-        # print(f"DoH Response Headers: {response.headers}") # Debugging line
-        # print(f"DoH Response Text: {response.text[:500]}") # Debugging line (first 500 chars)
+    except (requests.exceptions.ProxyError, requests.exceptions.ConnectTimeout,
+            requests.exceptions.SSLError, requests.exceptions.ConnectionError,
+            requests.exceptions.ReadTimeout, requests.exceptions.Timeout):
+        # print_colored(f"Proxy FAILED Connection: {proxy_str}", "red") # Debugging
+        pass # Ignore connection errors for this proxy
+    except Exception:
+         # print_colored(f"Proxy FAILED Unexpected: {proxy_str} - {e}", "red") # Debugging
+         pass # Ignore other errors too
+    return None
 
+def check_proxies_concurrently(proxy_list=PROXY_LIST, check_url='http://httpbin.org/ip', timeout=8, max_workers=200):
+    """Checks a list of proxies concurrently and returns a list of live ones."""
+    print_colored(f"Checking {len(proxy_list)} proxies concurrently (max workers: {max_workers})...", "cyan")
+    live_proxies = []
+    # Use a limited number of s for checking to avoid overwhelming the network/target
+    num_check_workers = min(max_workers, len(proxy_list))
 
-        # --- بررسی Content-Type پاسخ ---
-        # سرور DoH ممکن است JSON برنگرداند اگر هدر Accept مشخص نباشد
-        content_type = response.headers.get('Content-Type', '').lower()
-        if 'application/dns-json' in content_type:
-            data = response.json()
-        elif 'application/dns-message' in content_type:
-             # سرور ممکن است پاسخ باینری DNS را برگردانده باشد که پردازش آن سخت‌تر است
-             print_colored(f"DoH: Received binary dns-message response for {hostname}, cannot parse easily.", "yellow")
-             return None
-        else:
-             # فرمت نامشخص یا خطای HTML
-             print_colored(f"DoH: Received unexpected Content-Type '{content_type}' for {hostname}. Body: {response.text[:200]}", "yellow")
-             return None
+    with ThreadPoolExecutor(max_workers=num_check_workers) as executor:
+        futures = [executor.submit(check_proxy, proxy_str, check_url, timeout) for proxy_str in proxy_list]
+        for future in tqdm(as_completed(futures), total=len(proxy_list), desc="Checking Proxies", unit="proxy"):
+            result = future.result()
+            if result:
+                live_proxies.append(result)
 
-        # Check if the response status indicates success (Status: 0 typically means NOERROR)
-        if data.get('Status') == 0 and 'Answer' in data:
-            for answer in data['Answer']:
-                if answer.get('type') == 1: # Type 1 corresponds to A record (IPv4)
-                    ip_address = answer.get('data')
-                    # Basic validation of the returned IP
-                    if ip_address and '.' in ip_address: # Simple check for IPv4 format
-                         return ip_address
-            print_colored(f"DoH: No A record found for {hostname} in JSON response.", "yellow")
-        else:
-            status = data.get('Status', 'N/A')
-            print_colored(f"DoH: Resolution failed for {hostname} (Status: {status}).", "yellow")
+    print_colored(f"Found {len(live_proxies)} live proxies out of {len(proxy_list)}.",
+                  "green" if live_proxies else "red")
+    return live_proxies
 
-    except requests.exceptions.Timeout:
-        print_colored(f"DoH: Timeout connecting to {doh_url} for {hostname}", "yellow")
-    except requests.exceptions.RequestException as e:
-        # Check if response exists before accessing status_code
-        status_code = getattr(e.response, 'status_code', 'N/A') if e.response is not None else 'N/A'
-        print_colored(f"DoH: Request Error for {hostname} (Status: {status_code}): {e}", "yellow")
-    except json.JSONDecodeError:
-        print_colored(f"DoH: Failed to parse JSON response from {doh_url} for {hostname}. Body: {response.text[:200]}", "yellow")
-    except Exception as e:
-        print_colored(f"DoH: Unexpected error resolving {hostname}: {type(e).__name__}", "yellow")
-
-    return None # Return None if resolution fails
-
-
-# --- تابع تست و دانلود استریم با DoH (بدون تغییر نسبت به قبل) ---
-def download_stream(url, duration=80):
+# --- تابع تست و دانلود استریم با استفاده از پراکسی‌های زنده (اصلاح شده) ---
+def download_stream(url, duration=80, live_proxies=None): # Accept live_proxies list
     """
-    Tests a stream URL by downloading for a duration, using DoH resolution.
+    Tests a stream URL using a randomly chosen live proxy.
     Checks download speed after an initial period.
     """
+    if not live_proxies: # If list is empty or None
+        print_colored("No live proxies available to test stream.", "red")
+        return False
+
+    # --- انتخاب تصادفی یک پراکسی از لیست زنده‌ها ---
+    selected_proxy_str = random.choice(live_proxies)
+    # print_colored(f"Selected live proxy: {selected_proxy_str}", "cyan") # Debugging
+
+    protocol = 'http'
+    if ':1080' in selected_proxy_str or ':1088' in selected_proxy_str or ':9050' in selected_proxy_str:
+        protocol = 'socks5h'
+
+    proxies = {
+        'http': f'{protocol}://{selected_proxy_str}',
+        'https': f'{protocol}://{selected_proxy_str}'
+    }
+
     start_time = time.time()
     total_downloaded = 0
     valid = True
-    resolved_ip = None
-    original_host = None
-    scheme = None
+    original_host = urlparse(url).hostname or "UnknownHost"
 
     try:
-        # --- مرحله 1: تجزیه URL و ترجمه DNS با DoH ---
-        try:
-            parsed_url = urlparse(url)
-            original_host = parsed_url.hostname
-            scheme = parsed_url.scheme
-            if not original_host or scheme not in ['http', 'https']:
-                print_colored(f"Invalid URL: {url}", "red")
-                return False
-        except Exception as parse_err:
-             print_colored(f"Error parsing URL {url}: {parse_err}", "red")
-             return False
+        # --- درخواست با پراکسی انتخاب شده ---
+        print_colored(f"Testing {original_host[:25]}... via Live Proxy: {selected_proxy_str}", "cyan")
+        # Start with verify=True. If SSL errors occur frequently THROUGH proxies, consider verify=False.
+        response = requests.get(url, stream=True, timeout=duration, proxies=proxies, verify=True)
+        response.raise_for_status()
 
-        resolved_ip = resolve_with_doh(original_host)
+        # --- دانلود و تست سرعت ---
+        file_size = int(response.headers.get('content-length', 0))
+        chunk_size = 8192
+        progress_bar_disabled = not sys.stdout.isatty()
+        progress_bar = tqdm(total=file_size if file_size > 0 else None,
+                            unit='B', unit_scale=True,
+                            desc=f"Test {original_host[:20]} @{selected_proxy_str}",
+                            leave=False, disable=progress_bar_disabled)
 
-        if not resolved_ip:
-            print_colored(f"Cannot test stream for {original_host} due to DNS failure.", "red")
-            return False
+        min_speed_kbps = 40
+        initial_buffer_time = 5
+        download_started = False
 
-        print_colored(f"DoH OK: {original_host} -> {resolved_ip} (via Shecan)", "cyan")
+        for chunk in response.iter_content(chunk_size=chunk_size):
+            download_started = True
+            elapsed_time = time.time() - start_time
+            if elapsed_time >= duration:
+                break
 
-        # --- مرحله 2: ساخت URL جدید و هدر Host ---
-        new_netloc = resolved_ip
-        if parsed_url.port:
-            new_netloc += f":{parsed_url.port}"
+            if chunk:
+                len_chunk = len(chunk)
+                progress_bar.update(len_chunk)
+                total_downloaded += len_chunk
 
-        url_with_ip_parts = (scheme, new_netloc, parsed_url.path or '/', parsed_url.params, parsed_url.query, parsed_url.fragment)
-        url_with_ip = urlunparse(url_with_ip_parts)
+                if elapsed_time > initial_buffer_time:
+                    current_speed_bps = total_downloaded / elapsed_time
+                    current_speed_kbps = current_speed_bps / 1024
+                    if current_speed_kbps < min_speed_kbps:
+                        print_colored(f" Speed low ({current_speed_kbps:.1f} KB/s) via {selected_proxy_str}. Invalid.", "red")
+                        valid = False
+                        break
+        progress_bar.close()
+        response.close()
 
-        headers = {'Host': original_host,
-                   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
-
-        # --- مرحله 3: درخواست به IP با هدر Host و verify=False برای HTTPS ---
-        verify_ssl = True
-        if scheme == 'https':
-            verify_ssl = False # !!! SECURITY WARNING !!!
-            # print_colored(f"Warning: Using verify=False for HTTPS connection to {original_host} ({resolved_ip}).", "yellow")
-
-        with requests.Session() as session:
-             session.headers.update(headers)
-             response = session.get(url_with_ip, stream=True, timeout=duration, verify=verify_ssl)
-             response.raise_for_status()
-
-             # --- مرحله 4: دانلود و بررسی سرعت ---
-             file_size = int(response.headers.get('content-length', 0))
-             chunk_size = 8192
-             # Disable progress bar if not a TTY or explicitly requested
-             # Note: disable=None auto-detects, disable=True forces off, disable=False forces on
-             progress_bar_disabled = not sys.stdout.isatty()
-             progress_bar = tqdm(total=file_size if file_size > 0 else None,
-                                 unit='B', unit_scale=True,
-                                 desc=f"Testing {original_host[:20]}",
-                                 leave=False, disable=progress_bar_disabled)
-
-             min_speed_kbps = 40
-             initial_buffer_time = 5
-             download_started = False
-
-             for chunk in response.iter_content(chunk_size=chunk_size):
-                 download_started = True # Mark that we received at least one chunk
-                 elapsed_time = time.time() - start_time
-                 if elapsed_time >= duration:
-                     break
-
-                 if chunk:
-                     len_chunk = len(chunk)
-                     progress_bar.update(len_chunk)
-                     total_downloaded += len_chunk
-
-                     if elapsed_time > initial_buffer_time:
-                         current_speed_bps = total_downloaded / elapsed_time
-                         current_speed_kbps = current_speed_bps / 1024
-                         if current_speed_kbps < min_speed_kbps:
-                             valid = False
-                             break
-             progress_bar.close()
-
-             # If file size was known > 0 but we downloaded nothing OR we never started
-             if not download_started and file_size != 0:
-                 print_colored(" No data downloaded despite known size. Invalid.", "red")
-                 valid = False
-             # If file size was unknown and we downloaded nothing
-             elif total_downloaded == 0 and file_size == 0:
-                  print_colored(" No data downloaded (and size unknown). Invalid.", "red")
-                  valid = False
-
-
-             response.close()
-
+        if not download_started and file_size != 0:
+            print_colored(f" No data via {selected_proxy_str} (size known). Invalid.", "red")
+            valid = False
+        elif total_downloaded == 0 and file_size == 0:
+             print_colored(f" No data via {selected_proxy_str} (size unknown). Invalid.", "red")
+             valid = False
+        elif valid and download_started: # Ensure it's still considered valid and we got *something*
+             print_colored(f"Stream OK via {selected_proxy_str} ({total_downloaded/1024/1024:.2f} MB).", "green")
+             # valid remains True
 
     except requests.exceptions.Timeout:
-        print_colored(f" Request Timed Out testing {original_host}.", "red")
+        print_colored(f" Timeout testing {original_host} via {selected_proxy_str}. Invalid.", "red")
+        valid = False
+    except requests.exceptions.SSLError as e:
+         print_colored(f" SSL Error testing {original_host} via {selected_proxy_str}. Invalid. (Try verify=False if trusted?)", "red")
+         valid = False
+    except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError) as e:
+        # If the PRE-CHECKED proxy fails HERE, it might have died recently. Mark stream as invalid.
+        print_colored(f" Live Proxy {selected_proxy_str} failed during stream test for {original_host}: {type(e).__name__}. Invalid.", "red")
         valid = False
     except requests.exceptions.RequestException as e:
         status = getattr(e.response, 'status_code', 'N/A')
-        print_colored(f" Request Error (Status: {status}) testing {original_host}. Invalid.", "red")
+        print_colored(f" Request Error (Status: {status}) testing {original_host} via {selected_proxy_str}. Invalid.", "red")
         valid = False
     except Exception as e:
-        print_colored(f" Unexpected Error testing {original_host}: {type(e).__name__}", "red")
+        print_colored(f" Unexpected Error testing {original_host} via {selected_proxy_str}: {type(e).__name__}", "red")
         valid = False
-
-    if valid:
-        print_colored(f"Stream OK ({total_downloaded / 1024 / 1024:.2f} MB).", "green")
 
     return valid
 
 
-# --- تابع پردازش فایل M3U (بدون تغییر) ---
-def process_m3u_file(file_path):
+# --- تابع پردازش فایل M3U (اصلاح شده برای پاس دادن پراکسی‌های زنده) ---
+def process_m3u_file(file_path, live_proxies): # Accept live_proxies
+    """
+    Processes a single M3U file, extracts the 15th line as URL, and tests it using one live proxy.
+    Returns the file_path if the stream is valid, otherwise None.
+    """
     lines = []
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             lines = file.readlines()
     except Exception as e:
-         print_colored(f"Error reading {os.path.basename(file_path)}: {e}", "red")
+         # print_colored(f"Error reading {os.path.basename(file_path)}: {e}", "red") # Reduce noise
          return None
 
     required_line_index = 14
@@ -252,8 +229,8 @@ def process_m3u_file(file_path):
     if len(lines) > required_line_index:
         stream_url_line = lines[required_line_index].strip()
         if stream_url_line.startswith(('http://', 'https://')) and '.' in stream_url_line:
-            # print(f"\nProcessing: {os.path.basename(file_path)}") # Reduce verbosity
-            if download_stream(stream_url_line):
+            # Pass live_proxies list to download_stream
+            if download_stream(stream_url_line, live_proxies=live_proxies):
                 return file_path
             else:
                 return None
@@ -263,7 +240,7 @@ def process_m3u_file(file_path):
         return None
 
 
-# --- تابع اصلی (بدون تغییر) ---
+# --- تابع اصلی (اصلاح شده برای پیش-بررسی پراکسی) ---
 def main():
     clean_best_folder()
 
@@ -276,14 +253,25 @@ def main():
         print_colored(f"No .m3u files found in '{input_folder}'. Exiting.", "yellow")
         return
 
-    print_colored(f"Found {len(m3u_files)} .m3u files. Testing streams using Shecan DoH...", "magenta")
+    # --- *** مرحله 1: پیش-بررسی پراکسی‌ها *** ---
+    live_proxies = check_proxies_concurrently()
+    if not live_proxies:
+        print_colored("No live proxies found after checking. Cannot test streams. Exiting.", "red")
+        sys.exit(1)
+    # Optionally shuffle the live list to distribute load better if using sequentially later
+    random.shuffle(live_proxies)
+    print_colored(f"Proceeding to test streams using {len(live_proxies)} live proxies...", "magenta")
+    # -----------------------------------------
 
     valid_files = []
-    num_workers = min(max(4, os.cpu_count() * 4 ), 200)
-    print_colored(f"Using {num_workers} concurrent workers.", "cyan")
+    # Adjust workers - less impact from proxy checking now, focus on stream testing limits
+    num_workers = min(max(4, os.cpu_count() * 4 ), 50) # Keep reasonable limit
+    print_colored(f"Using {num_workers} concurrent workers for stream testing.", "cyan")
 
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        futures = [executor.submit(process_m3u_file, os.path.join(input_folder, filename)) for filename in m3u_files]
+        # Pass the list of live_proxies to each worker task
+        futures = [executor.submit(process_m3u_file, os.path.join(input_folder, filename), live_proxies)
+                   for filename in m3u_files]
 
         for future in tqdm(as_completed(futures), total=len(m3u_files), desc="Testing Streams", unit="file"):
             try:
@@ -293,10 +281,11 @@ def main():
             except Exception as e:
                  print_colored(f"\nError processing a file future: {e}", "red")
 
+
     print_colored(f"\nFound {len(valid_files)} valid files. Copying to '{best_folder}'...", "magenta")
     copied_count = 0
     mvp_copied = False
-    valid_files.sort()
+    valid_files.sort() # Sort alphabetically for consistent naming
     for index, file_path in enumerate(valid_files, start=1):
         try:
             base_filename = os.path.basename(file_path)
@@ -336,7 +325,8 @@ if __name__ == "__main__":
 
     def signal_handler(sig, frame):
         print_colored('\nCtrl+C detected. Exiting...', 'yellow')
-        sys.exit(0)
+        # Potentially add code here to signal threads to stop if possible/needed
+        os._exit(1) # Force exit more abruptly if graceful shutdown is hard
     signal.signal(signal.SIGINT, signal_handler)
 
     main()

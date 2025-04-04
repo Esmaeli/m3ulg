@@ -3,7 +3,7 @@ import os
 import requests
 import shutil
 import time
-import psutil
+import psutil # اگرچه دیگر برای سرعت استفاده نمی‌شود، ممکن است برای کارهای دیگر بماند
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
@@ -49,11 +49,8 @@ def print_colored(text: str, color: str) -> None:
 def clean_best_folder():
     """پاک کردن کامل پوشه best و ایجاد مجدد آن با .gitkeep"""
     if os.path.exists(best_folder):
-        try:
-            shutil.rmtree(best_folder)
-            # print_colored(f"پوشه {best_folder} پاک شد.", "green") # Less verbose
-        except Exception as e:
-            print_colored(f"خطا در پاک کردن {best_folder}: {e}", "red")
+        try: shutil.rmtree(best_folder)
+        except Exception as e: print_colored(f"خطا در پاک کردن {best_folder}: {e}", "red")
     try:
         os.makedirs(best_folder, exist_ok=True)
         with open(os.path.join(best_folder, ".gitkeep"), "w") as f: f.write("")
@@ -61,186 +58,128 @@ def clean_best_folder():
         print_colored(f"خطا در ایجاد {best_folder}: {e}", "red")
         sys.exit(1)
 
-# --- تابع پیش-بررسی پراکسی (جدید) ---
+# --- تابع پیش-بررسی پراکسی (بدون تغییر) ---
 def check_proxy(proxy_str, check_url='http://httpbin.org/ip', timeout=8):
     """Tries to connect to check_url via the proxy. Returns proxy_str if successful, None otherwise."""
     protocol = 'http'
     if ':1080' in proxy_str or ':1088' in proxy_str or ':9050' in proxy_str:
         protocol = 'socks5h'
-
-    proxies = {
-        'http': f'{protocol}://{proxy_str}',
-        'https': f'{protocol}://{proxy_str}'
-    }
+    proxies = {'http': f'{protocol}://{proxy_str}','https': f'{protocol}://{proxy_str}'}
     try:
-        # Use a simple HEAD request for speed, or GET if HEAD fails often
         response = requests.get(check_url, proxies=proxies, timeout=timeout, headers={'User-Agent': 'ProxyChecker/1.0'})
-        # Check for successful status code (2xx)
-        if 200 <= response.status_code < 300:
-            # print_colored(f"Proxy OK: {proxy_str}", "green") # Debugging
-            return proxy_str
-        # else: # Debugging
-        #    print_colored(f"Proxy BAD Status ({response.status_code}): {proxy_str}", "yellow")
-
-    except (requests.exceptions.ProxyError, requests.exceptions.ConnectTimeout,
-            requests.exceptions.SSLError, requests.exceptions.ConnectionError,
-            requests.exceptions.ReadTimeout, requests.exceptions.Timeout):
-        # print_colored(f"Proxy FAILED Connection: {proxy_str}", "red") # Debugging
-        pass # Ignore connection errors for this proxy
-    except Exception:
-         # print_colored(f"Proxy FAILED Unexpected: {proxy_str} - {e}", "red") # Debugging
-         pass # Ignore other errors too
+        if 200 <= response.status_code < 300: return proxy_str
+    except Exception: pass # Ignore all errors during check
     return None
 
-def check_proxies_concurrently(proxy_list=PROXY_LIST, check_url='http://httpbin.org/ip', timeout=8, max_workers=200):
+def check_proxies_concurrently(proxy_list=PROXY_LIST, check_url='http://httpbin.org/ip', timeout=8, max_workers=100):
     """Checks a list of proxies concurrently and returns a list of live ones."""
     print_colored(f"Checking {len(proxy_list)} proxies concurrently (max workers: {max_workers})...", "cyan")
     live_proxies = []
-    # Use a limited number of s for checking to avoid overwhelming the network/target
     num_check_workers = min(max_workers, len(proxy_list))
-
     with ThreadPoolExecutor(max_workers=num_check_workers) as executor:
         futures = [executor.submit(check_proxy, proxy_str, check_url, timeout) for proxy_str in proxy_list]
         for future in tqdm(as_completed(futures), total=len(proxy_list), desc="Checking Proxies", unit="proxy"):
             result = future.result()
-            if result:
-                live_proxies.append(result)
-
-    print_colored(f"Found {len(live_proxies)} live proxies out of {len(proxy_list)}.",
-                  "green" if live_proxies else "red")
+            if result: live_proxies.append(result)
+    print_colored(f"Found {len(live_proxies)} live proxies out of {len(proxy_list)}.", "green" if live_proxies else "red")
     return live_proxies
 
-# --- تابع تست و دانلود استریم با استفاده از پراکسی‌های زنده (اصلاح شده) ---
-def download_stream(url, duration=80, live_proxies=None): # Accept live_proxies list
+# --- تابع تست استریم با معیار جدید (1 ثانیه و 10 کیلوبایت) ---
+def download_stream(url, live_proxies=None, overall_timeout=10): # Default overall timeout 10s
     """
     Tests a stream URL using a randomly chosen live proxy.
-    Checks download speed after an initial period.
+    Success requires downloading at least 10KB within the first second(s).
     """
-    if not live_proxies: # If list is empty or None
-        print_colored("No live proxies available to test stream.", "red")
-        return False
+    # --- تعریف معیارهای جدید ---
+    min_duration_sec = 1.0
+    min_bytes_downloaded = 10 * 1024 # 10 KB
 
-    # --- انتخاب تصادفی یک پراکسی از لیست زنده‌ها ---
+    if not live_proxies: return False
     selected_proxy_str = random.choice(live_proxies)
-    # print_colored(f"Selected live proxy: {selected_proxy_str}", "cyan") # Debugging
 
     protocol = 'http'
     if ':1080' in selected_proxy_str or ':1088' in selected_proxy_str or ':9050' in selected_proxy_str:
         protocol = 'socks5h'
-
-    proxies = {
-        'http': f'{protocol}://{selected_proxy_str}',
-        'https': f'{protocol}://{selected_proxy_str}'
-    }
+    proxies = {'http': f'{protocol}://{selected_proxy_str}','https': f'{protocol}://{selected_proxy_str}'}
 
     start_time = time.time()
     total_downloaded = 0
-    valid = True
+    valid = False # شرط جدید: باید فعالانه True شود
     original_host = urlparse(url).hostname or "UnknownHost"
+    connection_successful = False
 
     try:
-        # --- درخواست با پراکسی انتخاب شده ---
         print_colored(f"Testing {original_host[:25]}... via Live Proxy: {selected_proxy_str}", "cyan")
-        # Start with verify=True. If SSL errors occur frequently THROUGH proxies, consider verify=False.
-        response = requests.get(url, stream=True, timeout=duration, proxies=proxies, verify=True)
+        # --- استفاده از تایم‌اوت کلی برای کل درخواست ---
+        response = requests.get(url, stream=True, timeout=overall_timeout, proxies=proxies, verify=True)
         response.raise_for_status()
+        connection_successful = True
 
-        # --- دانلود و تست سرعت ---
-        file_size = int(response.headers.get('content-length', 0))
-        chunk_size = 8192
-        progress_bar_disabled = not sys.stdout.isatty()
-        progress_bar = tqdm(total=file_size if file_size > 0 else None,
-                            unit='B', unit_scale=True,
-                            desc=f"Test {original_host[:20]} @{selected_proxy_str}",
-                            leave=False, disable=progress_bar_disabled)
-
-        min_speed_kbps = 40
-        initial_buffer_time = 5
-        download_started = False
-
+        # --- حلقه دانلود برای رسیدن به معیار ---
+        chunk_size = 4096 # اندازه مناسب برای خواندن سریع
         for chunk in response.iter_content(chunk_size=chunk_size):
-            download_started = True
-            elapsed_time = time.time() - start_time
-            if elapsed_time >= duration:
-                break
-
             if chunk:
-                len_chunk = len(chunk)
-                progress_bar.update(len_chunk)
-                total_downloaded += len_chunk
+                total_downloaded += len(chunk)
+                elapsed_time = time.time() - start_time
 
-                if elapsed_time > initial_buffer_time:
-                    current_speed_bps = total_downloaded / elapsed_time
-                    current_speed_kbps = current_speed_bps / 1024
-                    if current_speed_kbps < min_speed_kbps:
-                        print_colored(f" Speed low ({current_speed_kbps:.1f} KB/s) via {selected_proxy_str}. Invalid.", "red")
-                        valid = False
-                        break
-        progress_bar.close()
-        response.close()
+                # --- بررسی شرط موفقیت ---
+                if elapsed_time >= min_duration_sec and total_downloaded >= min_bytes_downloaded:
+                    valid = True
+                    break # موفقیت! از حلقه خارج شو
 
-        if not download_started and file_size != 0:
-            print_colored(f" No data via {selected_proxy_str} (size known). Invalid.", "red")
-            valid = False
-        elif total_downloaded == 0 and file_size == 0:
-             print_colored(f" No data via {selected_proxy_str} (size unknown). Invalid.", "red")
-             valid = False
-        elif valid and download_started: # Ensure it's still considered valid and we got *something*
-             print_colored(f"Stream OK via {selected_proxy_str} ({total_downloaded/1024/1024:.2f} MB).", "green")
-             # valid remains True
+                # --- بررسی تایم‌اوت کلی در حین دانلود ---
+                # اگر زمان کلی گذشت و شرط برقرار نشد، شکست خورده است
+                if elapsed_time >= overall_timeout:
+                    # print_colored(f" Timeout ({overall_timeout}s) reached before condition met.", "yellow") # Debug
+                    break
 
+        response.close() # بستن اتصال
+
+    # --- مدیریت خطاها ---
     except requests.exceptions.Timeout:
-        print_colored(f" Timeout testing {original_host} via {selected_proxy_str}. Invalid.", "red")
-        valid = False
+        print_colored(f" Timeout ({overall_timeout}s) testing {original_host} via {selected_proxy_str}. Invalid.", "red")
     except requests.exceptions.SSLError as e:
-         print_colored(f" SSL Error testing {original_host} via {selected_proxy_str}. Invalid. (Try verify=False if trusted?)", "red")
-         valid = False
+         print_colored(f" SSL Error testing {original_host} via {selected_proxy_str}. Invalid.", "red")
+         # Consider adding verify=False here ONLY IF necessary AND you accept the risk
+         # print_colored(" Try using verify=False in requests.get if source is trusted.", "yellow")
     except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError) as e:
-        # If the PRE-CHECKED proxy fails HERE, it might have died recently. Mark stream as invalid.
-        print_colored(f" Live Proxy {selected_proxy_str} failed during stream test for {original_host}: {type(e).__name__}. Invalid.", "red")
-        valid = False
+        print_colored(f" Live Proxy {selected_proxy_str} failed for {original_host}: {type(e).__name__}. Invalid.", "red")
     except requests.exceptions.RequestException as e:
         status = getattr(e.response, 'status_code', 'N/A')
         print_colored(f" Request Error (Status: {status}) testing {original_host} via {selected_proxy_str}. Invalid.", "red")
-        valid = False
     except Exception as e:
         print_colored(f" Unexpected Error testing {original_host} via {selected_proxy_str}: {type(e).__name__}", "red")
-        valid = False
+
+    # --- پیام نهایی ---
+    if valid:
+        print_colored(f"Stream OK (>{min_bytes_downloaded/1024:.0f}KB in >{min_duration_sec:.0f}s) via {selected_proxy_str}.", "green")
+    elif connection_successful: # وصل شد اما شرط را برآورده نکرد
+        print_colored(f"Stream Failed Check (>{min_bytes_downloaded/1024:.0f}KB in >{min_duration_sec:.0f}s not met) via {selected_proxy_str}.", "red")
+    # else: اتصال برقرار نشد، خطا قبلاً چاپ شده
 
     return valid
 
 
 # --- تابع پردازش فایل M3U (اصلاح شده برای پاس دادن پراکسی‌های زنده) ---
-def process_m3u_file(file_path, live_proxies): # Accept live_proxies
-    """
-    Processes a single M3U file, extracts the 15th line as URL, and tests it using one live proxy.
-    Returns the file_path if the stream is valid, otherwise None.
-    """
+def process_m3u_file(file_path, live_proxies):
     lines = []
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             lines = file.readlines()
-    except Exception as e:
-         # print_colored(f"Error reading {os.path.basename(file_path)}: {e}", "red") # Reduce noise
-         return None
+    except Exception: return None # Ignore read errors
 
     required_line_index = 14
 
     if len(lines) > required_line_index:
         stream_url_line = lines[required_line_index].strip()
         if stream_url_line.startswith(('http://', 'https://')) and '.' in stream_url_line:
-            # Pass live_proxies list to download_stream
+            # Pass live_proxies list to the new download_stream
             if download_stream(stream_url_line, live_proxies=live_proxies):
                 return file_path
-            else:
-                return None
-        else:
-            return None
-    else:
-        return None
+    return None
 
 
-# --- تابع اصلی (اصلاح شده برای پیش-بررسی پراکسی) ---
+# --- تابع اصلی (تنظیمات ورکر مثل قبل) ---
 def main():
     clean_best_folder()
 
@@ -253,23 +192,20 @@ def main():
         print_colored(f"No .m3u files found in '{input_folder}'. Exiting.", "yellow")
         return
 
-    # --- *** مرحله 1: پیش-بررسی پراکسی‌ها *** ---
+    # --- مرحله 1: پیش-بررسی پراکسی‌ها ---
     live_proxies = check_proxies_concurrently()
     if not live_proxies:
-        print_colored("No live proxies found after checking. Cannot test streams. Exiting.", "red")
+        print_colored("No live proxies found. Cannot test streams. Exiting.", "red")
         sys.exit(1)
-    # Optionally shuffle the live list to distribute load better if using sequentially later
-    random.shuffle(live_proxies)
+    random.shuffle(live_proxies) # پخش کردن پراکسی‌ها
     print_colored(f"Proceeding to test streams using {len(live_proxies)} live proxies...", "magenta")
     # -----------------------------------------
 
     valid_files = []
-    # Adjust workers - less impact from proxy checking now, focus on stream testing limits
-    num_workers = min(max(4, os.cpu_count() * 4 ), 50) # Keep reasonable limit
+    num_workers = min(max(4, os.cpu_count() * 4 ), 100) # تعداد ورکر برای تست استریم
     print_colored(f"Using {num_workers} concurrent workers for stream testing.", "cyan")
 
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        # Pass the list of live_proxies to each worker task
         futures = [executor.submit(process_m3u_file, os.path.join(input_folder, filename), live_proxies)
                    for filename in m3u_files]
 
@@ -282,10 +218,10 @@ def main():
                  print_colored(f"\nError processing a file future: {e}", "red")
 
 
-    print_colored(f"\nFound {len(valid_files)} valid files. Copying to '{best_folder}'...", "magenta")
+    print_colored(f"\nFound {len(valid_files)} valid files (met 1s/10KB criteria). Copying to '{best_folder}'...", "magenta")
     copied_count = 0
     mvp_copied = False
-    valid_files.sort() # Sort alphabetically for consistent naming
+    valid_files.sort()
     for index, file_path in enumerate(valid_files, start=1):
         try:
             base_filename = os.path.basename(file_path)
@@ -309,7 +245,7 @@ def main():
 
     print_colored(f"\n--- Summary ---", "magenta")
     print_colored(f"Total files processed: {len(m3u_files)}", "cyan")
-    print_colored(f"Valid streams found: {len(valid_files)}", "cyan")
+    print_colored(f"Valid streams found (met criteria): {len(valid_files)}", "cyan")
     print_colored(f"Files copied to '{best_folder}': {copied_count}", "green")
     if mvp_copied:
          print_colored(f"MVP file 'mvp.m3u' created.", "green")
@@ -325,8 +261,7 @@ if __name__ == "__main__":
 
     def signal_handler(sig, frame):
         print_colored('\nCtrl+C detected. Exiting...', 'yellow')
-        # Potentially add code here to signal threads to stop if possible/needed
-        os._exit(1) # Force exit more abruptly if graceful shutdown is hard
+        os._exit(1) # Use os._exit for more immediate exit in threaded context
     signal.signal(signal.SIGINT, signal_handler)
 
     main()

@@ -1,0 +1,68 @@
+name: Top TV M3U Validation
+
+on:
+  # Run automatically every 30 minutes
+  schedule:
+    - cron: '*/30 * * * *'  # Run every 30 minutes (cron syntax: minute hour day month day-of-week)
+
+  # Manual trigger
+  workflow_dispatch:
+
+jobs:
+  validate-m3u:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GPD9 }}  # Use the new token here
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # Step 3: Install dependencies from requirements.txt (if any)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      # Step 4: Create the validm3ufiles and best directories
+      - name: Create directories
+        run: |
+          mkdir -p validm3ufiles
+          mkdir -p best
+          # Create .gitkeep file in the best folder if it doesn't exist
+          touch best/.gitkeep
+
+      # Step 5: Run toptv.py to validate M3U files
+      - name: Run toptv.py
+        run: |
+          python toptv.py
+
+      # Step 6: Commit and push changes (if there are any)
+      - name: Commit and push changes
+        env:
+          GPD9: ${{ secrets.GPD9 }}  # Use the new token here
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Check if there are changes to commit
+          if [[ -n $(git status --porcelain) ]]; then
+            git add best/
+            git add mvp.m3u  # اضافه کردن فایل mvp.m3u به تغییرات
+            git commit -m "Auto-validated and updated best M3U files at $(date)"
+            # Pull changes from remote first to avoid conflicts
+            git pull --rebase https://x-access-token:${GPD9}@github.com/${{ github.repository }}.git main
+            # Push changes
+            git push https://x-access-token:${GPD9}@github.com/${{ github.repository }}.git main
+          else
+            echo "No changes to commit."
+          fi

@@ -42,11 +42,11 @@ jobs:
             mkdir -p specialiptvs
           fi
 
-      # Step 5: Ensure the fixmac.txt file exists
-      - name: Check for fixmac.txt
+      # Step 5: Ensure the m3ulinks.txt file exists
+      - name: Check for m3ulinks.txt
         run: |
-          if [ ! -f fixmac.txt ]; then
-            echo "fixmac.txt not found!"
+          if [ ! -f m3ulinks.txt ]; then
+            echo "m3ulinks.txt not found!"
             exit 1
           fi
 

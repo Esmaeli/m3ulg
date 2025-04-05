@@ -425,42 +425,6 @@ http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108742
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108743
 #EXTINF:-1 tvg-id="HD1" tvg-name="(FR) beIN SPORTS MAX 10" tvg-logo="http://163.172.89.228/~msepg/logos/a-sports/bein_sports/bein-sports-10-max-int.png" group-title="Bein Sports",(FR) beIN SPORTS MAX 10
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108744
-#EXTINF:-1 tvg-id="Bally Sports Detroit HD" tvg-name="BALLY SPORTS DETROIT" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-detroit-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS DETROIT
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35463
-#EXTINF:-1 tvg-id="Bally Sports Florida HD" tvg-name="BALLY SPORTS FLORIDA" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-florida-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS FLORIDA
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35462
-#EXTINF:-1 tvg-id="bally-sports-indiana" tvg-name="BALLY SPORTS INDIANA " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-indiana-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS INDIANA
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35461
-#EXTINF:-1 tvg-id="bally-sports-midwest-kansas-city" tvg-name="BALLY SPORTS KANSAS CITY" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-kansas-city-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS KANSAS CITY
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35460
-#EXTINF:-1 tvg-id="Bally Sports New Orleans (South) HD" tvg-name="BALLY SPORTS NEW ORLEANS" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-new-orleans-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS NEW ORLEANS
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103980
-#EXTINF:-1 tvg-id="Bally Sports North HD" tvg-name="BALLY SPORTS NORTH " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-north-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS NORTH
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35457
-#EXTINF:-1 tvg-id="bally-sports-midwest" tvg-name="BALLY SPORTS MID WEST " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-midwest-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS MID WEST
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35459
-#EXTINF:-1 tvg-id="bally-sports-socal" tvg-name="BALLY SPORTS SO-CAL(PRIME-TICKET)" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-socal-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SO-CAL(PRIME-TICKET)
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35456
-#EXTINF:-1 tvg-id="Bally Sports San Diego HD" tvg-name="BALLY SPORTS SAN DIEGO " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-san-diego-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SAN DIEGO
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35455
-#EXTINF:-1 tvg-id="Bally Sports Southwest (Main Feed)" tvg-name="BALLY SPORTS SOUTH WEST" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-southwest-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SOUTH WEST
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35453
-#EXTINF:-1 tvg-id="Bally Sports South - Main Feed" tvg-name="BALLY SPORTS SOUTH " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-south-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SOUTH
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35454
-#EXTINF:-1 tvg-id="Bally Sports Southeast HD" tvg-name="BALLY SPORTS SOUTH EAST " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-southeast-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SOUTH EAST
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35452
-#EXTINF:-1 tvg-id="Bally Sports Ohio HD (Zone 1)" tvg-name="BALLY SPORTS OHIO " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-ohio-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS OHIO
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35449
-#EXTINF:-1 tvg-id="Bally Sports Sun" tvg-name="BALLY SPORTS SUN " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-sun-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SUN
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35448
-#EXTINF:-1 tvg-id="Bally Sports West HD" tvg-name="BALLY SPORTS WEST" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-west-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS WEST
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35446
-#EXTINF:-1 tvg-id="bally-sports-wisconsin" tvg-name="BALLY SPORTS WISCONSIN " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-winsconsin-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS WISCONSIN
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35445
-#EXTINF:-1 tvg-id="Bally Sports Great Lakes HD" tvg-name="BALLY SPORTS GREAT LAKES" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-great-lakes-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS GREAT LAKES
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108375
-#EXTINF:-1 tvg-id="bally-sports-oklahoma-hd" tvg-name="BALLY SPORTS OKLAHAMA" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-oklahoma-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS OKLAHAMA
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108581
 #EXTINF:-1 tvg-id="TNT Sports 1 HD" tvg-name="TNT-BT Sport 1" tvg-logo="http://163.172.89.228/~msepg/logos/united-kingdom/tntsports1.png" group-title="UK Sports",TNT-BT Sport 1
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/100775
 #EXTINF:-1 tvg-id="TNT Sports 2 HD" tvg-name="TNT-BT Sport 2" tvg-logo="http://163.172.89.228/~msepg/logos/united-kingdom/tntsports2.png" group-title="UK Sports",TNT-BT Sport 2
@@ -515,6 +479,84 @@ http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103987
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/109330
 #EXTINF:-1 tvg-id="" tvg-name="PDC Darts 02: (EVENTS ONLY)" tvg-logo="http://163.172.89.228/~msepg/logos/united-kingdom/pdc_uk.png" group-title="UK Sports",PDC Darts 02: (EVENTS ONLY)
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/109331
+#EXTINF:-1 tvg-id="ACTION" tvg-name="SuperSport Action" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-action-za.png" group-title="Astro SS / SuperSport  ",SuperSport Action
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70938
+#EXTINF:-1 tvg-id="BLITZ" tvg-name="SuperSport Blitz" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-blitz-za.png" group-title="Astro SS / SuperSport  ",SuperSport Blitz
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70932
+#EXTINF:-1 tvg-id="CRICKET" tvg-name="SuperSport Cricket" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-cricket-za.png" group-title="Astro SS / SuperSport  ",SuperSport Cricket
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102200
+#EXTINF:-1 tvg-id="FOOTBALL" tvg-name="SuperSport Football" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-football-za.png" group-title="Astro SS / SuperSport  ",SuperSport Football
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70936
+#EXTINF:-1 tvg-id="GOLF" tvg-name="SuperSport Golf" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-golf-za.png" group-title="Astro SS / SuperSport  ",SuperSport Golf
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70939
+#EXTINF:-1 tvg-id="GRANDSTAND" tvg-name="SuperSport GrandStand" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-grandstand-za.png" group-title="Astro SS / SuperSport  ",SuperSport GrandStand
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102201
+#EXTINF:-1 tvg-id="LA LIGA" tvg-name="SuperSport La Liga" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-la-liga-za.png" group-title="Astro SS / SuperSport  ",SuperSport La Liga
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70937
+#EXTINF:-1 tvg-id="MOTORSPORT" tvg-name="SuperSport Motorsport" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-motorsport-za.png" group-title="Astro SS / SuperSport  ",SuperSport Motorsport
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102202
+#EXTINF:-1 tvg-id="EPL" tvg-name="SuperSport Premier League" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-premier-league-za.png" group-title="Astro SS / SuperSport  ",SuperSport Premier League
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70934
+#EXTINF:-1 tvg-id="PSL" tvg-name="SuperSport PSL" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-psl-za.png" group-title="Astro SS / SuperSport  ",SuperSport PSL
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70933
+#EXTINF:-1 tvg-id="RUGBY" tvg-name="SuperSport Rugby" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-rugby-za.png" group-title="Astro SS / SuperSport  ",SuperSport Rugby
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102199
+#EXTINF:-1 tvg-id="TENNIS" tvg-name="SuperSport Tennis" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-tennis-za.png" group-title="Astro SS / SuperSport  ",SuperSport Tennis
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70935
+#EXTINF:-1 tvg-id="VARIETY 1" tvg-name="SuperSport Variety 1" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-1-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 1
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70928
+#EXTINF:-1 tvg-id="VARIETY 2" tvg-name="SuperSport Variety 2" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-2-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 2
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70929
+#EXTINF:-1 tvg-id="VARIETY 3" tvg-name="SuperSport Variety 3" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-3-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 3
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70930
+#EXTINF:-1 tvg-id="VARIETY 4" tvg-name="SuperSport Variety 4" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-4-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 4
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70931
+#EXTINF:-1 tvg-id="Astro SuperSport HD" tvg-name="ASTRO: SS 1" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 1
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103623
+#EXTINF:-1 tvg-id="Astro SuperSport 2 HD" tvg-name="ASTRO: SS 2" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-2-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 2
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103624
+#EXTINF:-1 tvg-id="Astro SuperSport 3 HD" tvg-name="ASTRO: SS 3" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-3-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 3
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103625
+#EXTINF:-1 tvg-id="Astro SuperSport 4 HD" tvg-name="ASTRO: SS 4" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-4-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 4
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103626
+#EXTINF:-1 tvg-id="" tvg-name="ASTRO: SS 5" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro_superssport_5.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 5
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/110275
+#EXTINF:-1 tvg-id="Bally Sports Detroit HD" tvg-name="BALLY SPORTS DETROIT" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-detroit-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS DETROIT
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35463
+#EXTINF:-1 tvg-id="Bally Sports Florida HD" tvg-name="BALLY SPORTS FLORIDA" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-florida-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS FLORIDA
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35462
+#EXTINF:-1 tvg-id="bally-sports-indiana" tvg-name="BALLY SPORTS INDIANA " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-indiana-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS INDIANA
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35461
+#EXTINF:-1 tvg-id="bally-sports-midwest-kansas-city" tvg-name="BALLY SPORTS KANSAS CITY" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-kansas-city-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS KANSAS CITY
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35460
+#EXTINF:-1 tvg-id="Bally Sports New Orleans (South) HD" tvg-name="BALLY SPORTS NEW ORLEANS" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-new-orleans-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS NEW ORLEANS
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103980
+#EXTINF:-1 tvg-id="Bally Sports North HD" tvg-name="BALLY SPORTS NORTH " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-north-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS NORTH
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35457
+#EXTINF:-1 tvg-id="bally-sports-midwest" tvg-name="BALLY SPORTS MID WEST " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-midwest-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS MID WEST
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35459
+#EXTINF:-1 tvg-id="bally-sports-socal" tvg-name="BALLY SPORTS SO-CAL(PRIME-TICKET)" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-socal-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SO-CAL(PRIME-TICKET)
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35456
+#EXTINF:-1 tvg-id="Bally Sports San Diego HD" tvg-name="BALLY SPORTS SAN DIEGO " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-san-diego-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SAN DIEGO
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35455
+#EXTINF:-1 tvg-id="Bally Sports Southwest (Main Feed)" tvg-name="BALLY SPORTS SOUTH WEST" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-southwest-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SOUTH WEST
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35453
+#EXTINF:-1 tvg-id="Bally Sports South - Main Feed" tvg-name="BALLY SPORTS SOUTH " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-south-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SOUTH
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35454
+#EXTINF:-1 tvg-id="Bally Sports Southeast HD" tvg-name="BALLY SPORTS SOUTH EAST " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-southeast-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SOUTH EAST
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35452
+#EXTINF:-1 tvg-id="Bally Sports Ohio HD (Zone 1)" tvg-name="BALLY SPORTS OHIO " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-ohio-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS OHIO
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35449
+#EXTINF:-1 tvg-id="Bally Sports Sun" tvg-name="BALLY SPORTS SUN " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-sun-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS SUN
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35448
+#EXTINF:-1 tvg-id="Bally Sports West HD" tvg-name="BALLY SPORTS WEST" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-west-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS WEST
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35446
+#EXTINF:-1 tvg-id="bally-sports-wisconsin" tvg-name="BALLY SPORTS WISCONSIN " tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-winsconsin-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS WISCONSIN
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/35445
+#EXTINF:-1 tvg-id="Bally Sports Great Lakes HD" tvg-name="BALLY SPORTS GREAT LAKES" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-great-lakes-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS GREAT LAKES
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108375
+#EXTINF:-1 tvg-id="bally-sports-oklahoma-hd" tvg-name="BALLY SPORTS OKLAHAMA" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/bally-sports-oklahoma-us.png" group-title="USA Bally Sports Networks",BALLY SPORTS OKLAHAMA
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108581
 #EXTINF:-1 tvg-id="Fight Network Canada HD" tvg-name="CA: FIGHT NETWORK" tvg-logo="http://163.172.89.228/~msepg/logos/canada/fight-network-ca.png" group-title="Canada Sports",CA: FIGHT NETWORK
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67153
 #EXTINF:-1 tvg-id="Ginx eSports TV Canada HD" tvg-name="CA: GINX ESPORTS TV" tvg-logo="http://163.172.89.228/~msepg/logos/canada/ginx-esports-tv-ca.png" group-title="Canada Sports",CA: GINX ESPORTS TV
@@ -699,48 +741,6 @@ http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/9506
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/59692
 #EXTINF:-1 tvg-id="NFL Network" tvg-name="NFL TV (SD)" tvg-logo="https://www.thesportsdb.com/images/media/logo/xutqxs1433382271.png" group-title="USA Sports",NFL TV (SD)
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103830
-#EXTINF:-1 tvg-id="ACTION" tvg-name="SuperSport Action" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-action-za.png" group-title="Astro SS / SuperSport  ",SuperSport Action
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70938
-#EXTINF:-1 tvg-id="BLITZ" tvg-name="SuperSport Blitz" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-blitz-za.png" group-title="Astro SS / SuperSport  ",SuperSport Blitz
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70932
-#EXTINF:-1 tvg-id="CRICKET" tvg-name="SuperSport Cricket" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-cricket-za.png" group-title="Astro SS / SuperSport  ",SuperSport Cricket
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102200
-#EXTINF:-1 tvg-id="FOOTBALL" tvg-name="SuperSport Football" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-football-za.png" group-title="Astro SS / SuperSport  ",SuperSport Football
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70936
-#EXTINF:-1 tvg-id="GOLF" tvg-name="SuperSport Golf" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-golf-za.png" group-title="Astro SS / SuperSport  ",SuperSport Golf
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70939
-#EXTINF:-1 tvg-id="GRANDSTAND" tvg-name="SuperSport GrandStand" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-grandstand-za.png" group-title="Astro SS / SuperSport  ",SuperSport GrandStand
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102201
-#EXTINF:-1 tvg-id="LA LIGA" tvg-name="SuperSport La Liga" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-la-liga-za.png" group-title="Astro SS / SuperSport  ",SuperSport La Liga
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70937
-#EXTINF:-1 tvg-id="MOTORSPORT" tvg-name="SuperSport Motorsport" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-motorsport-za.png" group-title="Astro SS / SuperSport  ",SuperSport Motorsport
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102202
-#EXTINF:-1 tvg-id="EPL" tvg-name="SuperSport Premier League" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-premier-league-za.png" group-title="Astro SS / SuperSport  ",SuperSport Premier League
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70934
-#EXTINF:-1 tvg-id="PSL" tvg-name="SuperSport PSL" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-psl-za.png" group-title="Astro SS / SuperSport  ",SuperSport PSL
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70933
-#EXTINF:-1 tvg-id="RUGBY" tvg-name="SuperSport Rugby" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-rugby-za.png" group-title="Astro SS / SuperSport  ",SuperSport Rugby
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/102199
-#EXTINF:-1 tvg-id="TENNIS" tvg-name="SuperSport Tennis" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-tennis-za.png" group-title="Astro SS / SuperSport  ",SuperSport Tennis
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70935
-#EXTINF:-1 tvg-id="VARIETY 1" tvg-name="SuperSport Variety 1" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-1-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 1
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70928
-#EXTINF:-1 tvg-id="VARIETY 2" tvg-name="SuperSport Variety 2" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-2-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 2
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70929
-#EXTINF:-1 tvg-id="VARIETY 3" tvg-name="SuperSport Variety 3" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-3-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 3
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70930
-#EXTINF:-1 tvg-id="VARIETY 4" tvg-name="SuperSport Variety 4" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-variety-4-za.png" group-title="Astro SS / SuperSport  ",SuperSport Variety 4
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70931
-#EXTINF:-1 tvg-id="Astro SuperSport HD" tvg-name="ASTRO: SS 1" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 1
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103623
-#EXTINF:-1 tvg-id="Astro SuperSport 2 HD" tvg-name="ASTRO: SS 2" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-2-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 2
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103624
-#EXTINF:-1 tvg-id="Astro SuperSport 3 HD" tvg-name="ASTRO: SS 3" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-3-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 3
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103625
-#EXTINF:-1 tvg-id="Astro SuperSport 4 HD" tvg-name="ASTRO: SS 4" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro-supersport-4-my.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 4
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103626
-#EXTINF:-1 tvg-id="" tvg-name="ASTRO: SS 5" tvg-logo="http://163.172.89.228/~msepg/logos/malaysia/astro_superssport_5.png" group-title="Astro SS / SuperSport  ",ASTRO: SS 5
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/110275
 #EXTINF:-1 tvg-id="" tvg-name="12 Monkeys" tvg-logo="https://dtechs.ddns.net:443/images/hSh0r5ENVdIdJud50VNBmxrk9MN_tT5vyxwUMB8HTOa3zgaS96wCX1EEgbJNPG76s1r3S-kPuDdu2Y8hHD1G_Q.jpg" group-title="24/7 Tv Shows ",12 Monkeys
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/119410
 #EXTINF:-1 tvg-id="" tvg-name="13 Reasons Why" tvg-logo="https://dtechs.ddns.net:443/images/hSh0r5ENVdIdJud50VNBmxrk9MN_tT5vyxwUMB8HTOaeqCI22xQTYWefwYoAhQMs-L8pZ0n6AzmIzy0QUlZFQA.jpg" group-title="24/7 Tv Shows ",13 Reasons Why

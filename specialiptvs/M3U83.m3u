@@ -425,6 +425,44 @@ http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108742
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108743
 #EXTINF:-1 tvg-id="HD1" tvg-name="(FR) beIN SPORTS MAX 10" tvg-logo="http://163.172.89.228/~msepg/logos/a-sports/bein_sports/bein-sports-10-max-int.png" group-title="Bein Sports",(FR) beIN SPORTS MAX 10
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/108744
+#EXTINF:-1 tvg-id="Fight Network Canada HD" tvg-name="CA: FIGHT NETWORK" tvg-logo="http://163.172.89.228/~msepg/logos/canada/fight-network-ca.png" group-title="Canada Sports",CA: FIGHT NETWORK
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67153
+#EXTINF:-1 tvg-id="Ginx eSports TV Canada HD" tvg-name="CA: GINX ESPORTS TV" tvg-logo="http://163.172.89.228/~msepg/logos/canada/ginx-esports-tv-ca.png" group-title="Canada Sports",CA: GINX ESPORTS TV
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67144
+#EXTINF:-1 tvg-id="Golf Channel Canada HD" tvg-name="CA: GOLF" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/golf_channel.png" group-title="Canada Sports",CA: GOLF
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67139
+#EXTINF:-1 tvg-id="MavTV USA" tvg-name="CA: MAVTV" tvg-logo="http://163.172.89.228/~msepg/logos/canada/mav-tv-ca.png" group-title="Canada Sports",CA: MAVTV
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67117
+#EXTINF:-1 tvg-id="NBA TV Canada TV HD" tvg-name="CA: NBA TV" tvg-logo="http://163.172.89.228/~msepg/logos/canada/nba-tv-ca.png" group-title="Canada Sports",CA: NBA TV
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67105
+#EXTINF:-1 tvg-id="Food.Network.Canada.On.Demand.ca" tvg-name="CA: RDS (FR)" tvg-logo="http://163.172.89.228/~msepg/logos/canada/rds-ca.png" group-title="Canada Sports",CA: RDS (FR)
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67090
+#EXTINF:-1 tvg-id="Food.Network.Canada.On.Demand.ca" tvg-name="CA: SPORTSMAN CHANNEL" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsman-channel-ca.png" group-title="Canada Sports",CA: SPORTSMAN CHANNEL
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67078
+#EXTINF:-1 tvg-id="Sportsnet 360 HD" tvg-name="CA: SPORTSNET 360" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-sn360-ca.png" group-title="Canada Sports",CA: SPORTSNET 360
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67077
+#EXTINF:-1 tvg-id="Sportsnet (East) HD" tvg-name="CA: SPORTSNET EAST" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-sne-ca.png" group-title="Canada Sports",CA: SPORTSNET EAST
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67076
+#EXTINF:-1 tvg-id="Sportsnet One HD" tvg-name="CA: SPORTSNET ONE" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-one-ca.png" group-title="Canada Sports",CA: SPORTSNET ONE
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67075
+#EXTINF:-1 tvg-id="Sportsnet (Ontario) HD" tvg-name="CA: SPORTSNET ONTARIO" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-ontario-ca.png" group-title="Canada Sports",CA: SPORTSNET ONTARIO
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67074
+#EXTINF:-1 tvg-id="Sportsnet (Pacific) HD" tvg-name="CA: SPORTSNET PACIFIC" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-pacific-ca.png" group-title="Canada Sports",CA: SPORTSNET PACIFIC
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67073
+#EXTINF:-1 tvg-id="Sportsnet (West) HD" tvg-name="CA: SPORTSNET WEST" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-snw-ca.png" group-title="Canada Sports",CA: SPORTSNET WEST
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67072
+#EXTINF:-1 tvg-id="TSN1 HD" tvg-name="CA: TSN 1" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-1-ca.png" group-title="Canada Sports",CA: TSN 1
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67052
+#EXTINF:-1 tvg-id="TSN2 HD" tvg-name="CA: TSN 2" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-2-ca.png" group-title="Canada Sports",CA: TSN 2
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67050
+#EXTINF:-1 tvg-id="TSN3 HD" tvg-name="CA: TSN 3" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-3-ca.png" group-title="Canada Sports",CA: TSN 3
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67048
+#EXTINF:-1 tvg-id="TSN4 HD" tvg-name="CA: TSN 4" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-4-ca.png" group-title="Canada Sports",CA: TSN 4
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67046
+#EXTINF:-1 tvg-id="TSN5 HD" tvg-name="CA: TSN 5" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-5-ca.png" group-title="Canada Sports",CA: TSN 5
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67044
+#EXTINF:-1 tvg-id="TVA Sports" tvg-name="CA: TVA Sports (FR)" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tva-sports-ca.png" group-title="Canada Sports",CA: TVA Sports (FR)
+http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67041
 #EXTINF:-1 tvg-id="ACTION" tvg-name="SuperSport Action" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-action-za.png" group-title="Astro SS / SuperSport  ",SuperSport Action
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/70938
 #EXTINF:-1 tvg-id="BLITZ" tvg-name="SuperSport Blitz" tvg-logo="https://www.lyngsat-logo.com/logo/tv/ss/supersport-blitz-za.png" group-title="Astro SS / SuperSport  ",SuperSport Blitz
@@ -613,44 +651,6 @@ http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/9506
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/59692
 #EXTINF:-1 tvg-id="NFL Network" tvg-name="NFL TV (SD)" tvg-logo="https://www.thesportsdb.com/images/media/logo/xutqxs1433382271.png" group-title="USA Sports",NFL TV (SD)
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/103830
-#EXTINF:-1 tvg-id="Fight Network Canada HD" tvg-name="CA: FIGHT NETWORK" tvg-logo="http://163.172.89.228/~msepg/logos/canada/fight-network-ca.png" group-title="Canada Sports",CA: FIGHT NETWORK
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67153
-#EXTINF:-1 tvg-id="Ginx eSports TV Canada HD" tvg-name="CA: GINX ESPORTS TV" tvg-logo="http://163.172.89.228/~msepg/logos/canada/ginx-esports-tv-ca.png" group-title="Canada Sports",CA: GINX ESPORTS TV
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67144
-#EXTINF:-1 tvg-id="Golf Channel Canada HD" tvg-name="CA: GOLF" tvg-logo="http://163.172.89.228/~msepg/logos/united-states/golf_channel.png" group-title="Canada Sports",CA: GOLF
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67139
-#EXTINF:-1 tvg-id="MavTV USA" tvg-name="CA: MAVTV" tvg-logo="http://163.172.89.228/~msepg/logos/canada/mav-tv-ca.png" group-title="Canada Sports",CA: MAVTV
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67117
-#EXTINF:-1 tvg-id="NBA TV Canada TV HD" tvg-name="CA: NBA TV" tvg-logo="http://163.172.89.228/~msepg/logos/canada/nba-tv-ca.png" group-title="Canada Sports",CA: NBA TV
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67105
-#EXTINF:-1 tvg-id="Food.Network.Canada.On.Demand.ca" tvg-name="CA: RDS (FR)" tvg-logo="http://163.172.89.228/~msepg/logos/canada/rds-ca.png" group-title="Canada Sports",CA: RDS (FR)
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67090
-#EXTINF:-1 tvg-id="Food.Network.Canada.On.Demand.ca" tvg-name="CA: SPORTSMAN CHANNEL" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsman-channel-ca.png" group-title="Canada Sports",CA: SPORTSMAN CHANNEL
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67078
-#EXTINF:-1 tvg-id="Sportsnet 360 HD" tvg-name="CA: SPORTSNET 360" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-sn360-ca.png" group-title="Canada Sports",CA: SPORTSNET 360
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67077
-#EXTINF:-1 tvg-id="Sportsnet (East) HD" tvg-name="CA: SPORTSNET EAST" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-sne-ca.png" group-title="Canada Sports",CA: SPORTSNET EAST
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67076
-#EXTINF:-1 tvg-id="Sportsnet One HD" tvg-name="CA: SPORTSNET ONE" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-one-ca.png" group-title="Canada Sports",CA: SPORTSNET ONE
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67075
-#EXTINF:-1 tvg-id="Sportsnet (Ontario) HD" tvg-name="CA: SPORTSNET ONTARIO" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-ontario-ca.png" group-title="Canada Sports",CA: SPORTSNET ONTARIO
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67074
-#EXTINF:-1 tvg-id="Sportsnet (Pacific) HD" tvg-name="CA: SPORTSNET PACIFIC" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-pacific-ca.png" group-title="Canada Sports",CA: SPORTSNET PACIFIC
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67073
-#EXTINF:-1 tvg-id="Sportsnet (West) HD" tvg-name="CA: SPORTSNET WEST" tvg-logo="http://163.172.89.228/~msepg/logos/canada/sportsnet-snw-ca.png" group-title="Canada Sports",CA: SPORTSNET WEST
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67072
-#EXTINF:-1 tvg-id="TSN1 HD" tvg-name="CA: TSN 1" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-1-ca.png" group-title="Canada Sports",CA: TSN 1
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67052
-#EXTINF:-1 tvg-id="TSN2 HD" tvg-name="CA: TSN 2" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-2-ca.png" group-title="Canada Sports",CA: TSN 2
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67050
-#EXTINF:-1 tvg-id="TSN3 HD" tvg-name="CA: TSN 3" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-3-ca.png" group-title="Canada Sports",CA: TSN 3
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67048
-#EXTINF:-1 tvg-id="TSN4 HD" tvg-name="CA: TSN 4" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-4-ca.png" group-title="Canada Sports",CA: TSN 4
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67046
-#EXTINF:-1 tvg-id="TSN5 HD" tvg-name="CA: TSN 5" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tsn-5-ca.png" group-title="Canada Sports",CA: TSN 5
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67044
-#EXTINF:-1 tvg-id="TVA Sports" tvg-name="CA: TVA Sports (FR)" tvg-logo="http://163.172.89.228/~msepg/logos/canada/tva-sports-ca.png" group-title="Canada Sports",CA: TVA Sports (FR)
-http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/67041
 #EXTINF:-1 tvg-id="TNT Sports 1 HD" tvg-name="TNT-BT Sport 1" tvg-logo="http://163.172.89.228/~msepg/logos/united-kingdom/tntsports1.png" group-title="UK Sports",TNT-BT Sport 1
 http://stb.velocity.watch:8080/2055676975/MAAvrCmWZ8FZ/100775
 #EXTINF:-1 tvg-id="TNT Sports 2 HD" tvg-name="TNT-BT Sport 2" tvg-logo="http://163.172.89.228/~msepg/logos/united-kingdom/tntsports2.png" group-title="UK Sports",TNT-BT Sport 2
